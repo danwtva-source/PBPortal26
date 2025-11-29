@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Communities' Choice Portal</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+      tailwind.config = {
+        theme: {
+          extend: {
+            fontFamily: {
+              dynapuff: ['DynaPuff', 'cursive'],
+              arial: ['Arial Nova', 'Arial', 'sans-serif'],
+            },
+            colors: {
+              brand: {
+                purple: '#9333ea', // Purple-600
+                darkPurple: '#7e22ce',
+                teal: '#14b8a6',   // Teal-500
+                darkTeal: '#0f766e',
+                light: '#f3e8ff',
+              }
+            },
+            animation: {
+              'fade-in': 'fadeIn 0.3s ease-in-out',
+              'slide-up': 'slideUp 0.4s ease-out',
+            },
+            keyframes: {
+              fadeIn: {
+                '0%': { opacity: '0' },
+                '100%': { opacity: '1' },
+              },
+              slideUp: {
+                '0%': { transform: 'translateY(20px)', opacity: '0' },
+                '100%': { transform: 'translateY(0)', opacity: '1' },
+              }
+            }
+          }
+        }
+      }
+    </script>
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DynaPuff:wght@400;500;600;700&family=Arial+Nova&display=swap" rel="stylesheet">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+      body { font-family: 'Arial Nova', Arial, sans-serif; }
+      h1, h2, h3, h4, h5, h6, .font-dynapuff { font-family: 'DynaPuff', cursive; }
+      
+      /* Custom Scrollbar */
+      .scroller::-webkit-scrollbar { width: 8px; height: 8px; }
+      .scroller::-webkit-scrollbar-track { background: #f3f4f6; }
+      .scroller::-webkit-scrollbar-thumb { background: #d8b4fe; border-radius: 4px; }
+      .scroller::-webkit-scrollbar-thumb:hover { background: #9333ea; }
+
+      /* Timeline Specifics */
+      .timeline-line { position: absolute; left: 50%; transform: translateX(-50%); width: 4px; background: #e9d5ff; top: 0; bottom: 0; z-index: 0; }
+      @media (max-width: 768px) { .timeline-line { left: 20px; } }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "react/": "https://aistudiocdn.com/react@^19.2.0/",
+    "react": "https://aistudiocdn.com/react@^19.2.0",
+    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.0/"
+  }
+}
+</script>
+</head>
+  <body class="bg-slate-50 text-slate-800 overflow-x-hidden">
+    <div id="root"></div>
+  </body>
+</html>
