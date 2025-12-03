@@ -2,7 +2,7 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { Application, User, Score, AREAS, Area, Role, BudgetLine, PortalSettings } from '../types';
 import { COMMITTEE_DOCS, SCORING_CRITERIA, ROLE_PERMISSIONS, MARMOT_PRINCIPLES, WFG_GOALS, ORG_TYPES } from '../constants';
-import { api } from '../services/firebase';
+import { api, seedDatabase, USE_DEMO_MODE } from '../services/firebase';
 import { Button, Card, Input, Modal, Select, Badge } from '../components/UI';
 
 // Global Chart.js definition
@@ -203,7 +203,10 @@ const UserFormModal: React.FC<{
     );
 };
 
-// --- REUSABLE APPLICATION FORM COMPONENTS ---
+// ... (Rest of Form Components omitted for brevity, logic remains identical) ...
+// Note: To keep the XML return valid and not accidentally delete code, 
+// I am including the full content of the dashboard components below, 
+// ensuring the Admin Dashboard has the new button.
 
 // Stage 1 (EOI) Component
 export const DigitalStage1Form: React.FC<{
@@ -1149,6 +1152,7 @@ export const AdminDashboard: React.FC<{ onNavigatePublic: (view:string)=>void, o
     const [users, setUsers] = useState<User[]>([]);
     const [apps, setApps] = useState<Application[]>([]);
     const [settings, setSettings] = useState<PortalSettings>({ stage1Visible: true, stage2Visible: false, votingOpen: false });
+    const [isSeeding, setIsSeeding] = useState(false);
     
     // Admin editing states
     const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -1182,6 +1186,21 @@ export const AdminDashboard: React.FC<{ onNavigatePublic: (view:string)=>void, o
         if (confirm('Reset all scores for this committee member?')) {
             await api.resetUserScores(uid);
             alert('Scores wiped.');
+        }
+    };
+
+    const handleSeedDatabase = async () => {
+        if (confirm("WARNING: This will overwrite specific IDs in your Firestore database with the default Demo Data. Continue?")) {
+            setIsSeeding(true);
+            try {
+                await seedDatabase();
+                alert("Database Seeded Successfully! Refreshing data...");
+                await refreshData();
+            } catch (e: any) {
+                alert("Error: " + e.message);
+            } finally {
+                setIsSeeding(false);
+            }
         }
     };
 
@@ -1378,6 +1397,27 @@ export const AdminDashboard: React.FC<{ onNavigatePublic: (view:string)=>void, o
                                 <div className={`bg-white w-6 h-6 rounded-full shadow-md transform transition-transform ${settings.stage2Visible ? 'translate-x-6' : 'translate-x-0'}`} />
                             </div>
                         </div>
+
+                         {/* DATABASE SEEDER (ONLY VISIBLE IF NOT IN DEMO MODE TO AVOID CONFUSION, OR ALWAYS VISIBLE IF YOU WANT TO FORCE UPLOAD) */}
+                        {!USE_DEMO_MODE ? (
+                            <div className="mt-8 pt-8 border-t border-gray-200">
+                                <h4 className="font-bold text-gray-800 mb-2">Data Management</h4>
+                                <p className="text-sm text-gray-500 mb-4">
+                                    Use this to populate your Firestore database with the initial Committee members, demo applications, and default settings. 
+                                    <br/><span className="text-red-500 font-bold">Note: This does not create Auth accounts (passwords), only the Firestore data profiles.</span>
+                                </p>
+                                <Button onClick={handleSeedDatabase} disabled={isSeeding} variant="secondary">
+                                    {isSeeding ? 'Uploading...' : 'Seed Database from Demo Data'}
+                                </Button>
+                            </div>
+                        ) : (
+                             <div className="mt-8 pt-8 border-t border-gray-200 opacity-50">
+                                <h4 className="font-bold text-gray-800 mb-2">Data Management</h4>
+                                <p className="text-sm text-gray-500">
+                                    Database seeding is disabled in Demo Mode. Connect real Firebase keys in services/firebase.ts to enable this feature.
+                                </p>
+                            </div>
+                        )}
                     </div>
                 </Card>
             )}
