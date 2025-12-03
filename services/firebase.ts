@@ -23,7 +23,7 @@ const firebaseConfig = {
 };
 
 // Initialize Firebase (Conditional)
-const app = !USE_DEMO_MODE ? initializeApp(firebaseConfig) : null;
+const app = !USE_DEMO_MODE = false initializeApp(firebaseConfig) : null;
 export const auth = app ? getAuth(app) : null;
 export const db = app ? getFirestore(app) : null;
 
@@ -411,3 +411,4 @@ class AuthService {
 }
 
 export const api = new AuthService();
+
